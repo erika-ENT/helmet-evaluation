@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satisfaction Survey</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        textarea, input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .rating input {
+            display: none;
+        }
+        .rating label {
+            font-size: 40px;
+            color: #ddd;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #FFD700;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #764ba2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #653a8a;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: #764ba2;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⭐ Satisfaction Survey</h1>
+        <p class="subtitle">How satisfied were you with our service?</p>
+        
+        <div class="message success" id="success-msg">
+            Thank you for your satisfaction review! Redirecting...
+        </div>
+        
+        <form id="satisfaction-form">
+            <label for="satisfaction">How satisfied were you with the service? *</label>
+            <textarea name="satisfaction" id="satisfaction" required></textarea>
+
+            <label>Rate the service (1-5 stars): *</label>
+            <div class="rating">
+                <input type="radio" id="star5" name="rating" value="5" required>
+                <label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star1">★</label>
+            </div>
+
+            <label for="comments">Additional Comments (optional):</label>
+            <textarea name="comments" id="comments"></textarea>
+
+            <button type="submit">Submit Satisfaction</button>
+        </form>
+        
+        <div class="back-link">
+            <a href="userindex.html">← Back to Main</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('satisfaction-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const helmetId = document.getElementById('helmet-id').value;
+            const satisfaction = document.getElementById('satisfaction').value;
+            const rating = document.querySelector('input[name="rating"]:checked')?.value;
+            const comments = document.getElementById('comments').value;
+            const date = new Date().toLocaleString();
+
+            if (!rating) {
+                alert('Please select a rating.');
+                return;
+            }
+
+            let satisfactionData = JSON.parse(localStorage.getItem('satisfaction')) || [];
+            const newId = satisfactionData.length + 1;
+
+            satisfactionData.push({
+                id: newId,
+                helmetId: helmetId,
+                satisfaction: satisfaction,
+                rating: parseInt(rating),
+                comments: comments,
+                date: date
+            });
+
+            localStorage.setItem('satisfaction', JSON.stringify(satisfactionData));
+
+            document.getElementById('success-msg').style.display = 'block';
+            setTimeout(() => {
+                window.location.href = 'userindex.html';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
